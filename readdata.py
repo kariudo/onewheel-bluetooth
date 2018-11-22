@@ -57,8 +57,8 @@ def handle_key_response(_, data):
 def unlock_gatt_sequence(device):
     print("Requesting encryption key...")
     device.subscribe(UUIDs.UartSerialRead, callback=handle_key_response)
-    version = device.char_read(UUIDs.FirmwareVersion)
-    device.char_write(UUIDs.FirmwareVersion, version, True)
+    version = device.char_read(UUIDs.FirmwareRevision)
+    device.char_write(UUIDs.FirmwareRevision, version, True)
     wait_for_key_response()
     key_output = create_response_key_output()
     print("Sending unlock key...")

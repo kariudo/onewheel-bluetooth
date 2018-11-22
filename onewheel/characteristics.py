@@ -1,5 +1,4 @@
 class UUIDs:
-    FirmwareVersion = "e659f311-ea98-11e3-ac10-0800200c9a66"
     OnewheelServiceUUID = "e659f300-ea98-11e3-ac10-0800200c9a66"
     OnewheelConfigUUID = "00002902-0000-1000-8000-00805f9b34fb"
     SerialNumber = "e659F301-ea98-11e3-ac10-0800200c9a66"  # 2085
