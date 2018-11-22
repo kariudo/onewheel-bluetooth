@@ -1,39 +1,39 @@
-uuid_dict = {
-    "FirmwareVersion": "e659f311-ea98-11e3-ac10-0800200c9a66",
-    "OnewheelServiceUUID": "e659f300-ea98-11e3-ac10-0800200c9a66",
-    "OnewheelConfigUUID": "00002902-0000-1000-8000-00805f9b34fb",
-    "SerialNumber": "e659F301-ea98-11e3-ac10-0800200c9a66",  # 2085
-    "RidingMode": "e659f302-ea98-11e3-ac10-0800200c9a66",
-    "BatteryRemaining": "e659f303-ea98-11e3-ac10-0800200c9a66",
-    "BatteryLow5": "e659f304-ea98-11e3-ac10-0800200c9a66",
-    "BatteryLow20": "e659f305-ea98-11e3-ac10-0800200c9a66",
-    "BatterySerial": "e659f306-ea98-11e3-ac10-0800200c9a66",  # 22136
-    "TiltAnglePitch": "e659f307-ea98-11e3-ac10-0800200c9a66",
-    "TiltAngleRoll": "e659f308-ea98-11e3-ac10-0800200c9a66",
-    "TiltAngleYaw": "e659f309-ea98-11e3-ac10-0800200c9a66",
-    "Temperature": "e659f310-ea98-11e3-ac10-0800200c9a66",
-    "StatusError": "e659f30f-ea98-11e3-ac10-0800200c9a66",
-    "BatteryCells": "e659f31b-ea98-11e3-ac10-0800200c9a66",
-    "BatteryTemp": "e659f315-ea98-11e3-ac10-0800200c9a66",
-    "BatteryVoltage": "e659f316-ea98-11e3-ac10-0800200c9a66",
-    "CurrentAmps": "e659f312-ea98-11e3-ac10-0800200c9a66",
-    "CustomName": "e659f3fd-ea98-11e3-ac10-0800200c9a66",
-    "FirmwareRevision": "e659f311-ea98-11e3-ac10-0800200c9a66",  # 3034
-    "HardwareRevision": "e659f318-ea98-11e3-ac10-0800200c9a66",  # 2206
-    "LastErrorCode": "e659f31c-ea98-11e3-ac10-0800200c9a66",
-    "LifetimeAmpHours": "e659f31a-ea98-11e3-ac10-0800200c9a66",
-    "LifetimeOdometer": "e659f319-ea98-11e3-ac10-0800200c9a66",
-    "LightingMode": "e659f30c-ea98-11e3-ac10-0800200c9a66",
-    "LightsBack": "e659f30e-ea98-11e3-ac10-0800200c9a66",
-    "LightsFront": "e659f30d-ea98-11e3-ac10-0800200c9a66",
-    "Odometer": "e659f30a-ea98-11e3-ac10-0800200c9a66",
-    "SafetyHeadroom": "e659f317-ea98-11e3-ac10-0800200c9a66",
-    "SpeedRpm": "e659f30b-ea98-11e3-ac10-0800200c9a66",
-    "TripRegenAmpHours": "e659f314-ea98-11e3-ac10-0800200c9a66",
-    "TripTotalAmpHours": "e659f313-ea98-11e3-ac10-0800200c9a66",
-    "UartSerialRead": "e659f3fe-ea98-11e3-ac10-0800200c9a66",
-    "UartSerialWrite": "e659f3ff-ea98-11e3-ac10-0800200c9a66"
-}
+class UUIDs:
+    FirmwareVersion = "e659f311-ea98-11e3-ac10-0800200c9a66"
+    OnewheelServiceUUID = "e659f300-ea98-11e3-ac10-0800200c9a66"
+    OnewheelConfigUUID = "00002902-0000-1000-8000-00805f9b34fb"
+    SerialNumber = "e659F301-ea98-11e3-ac10-0800200c9a66"  # 2085
+    RidingMode = "e659f302-ea98-11e3-ac10-0800200c9a66"
+    BatteryRemaining = "e659f303-ea98-11e3-ac10-0800200c9a66"
+    BatteryLow5 = "e659f304-ea98-11e3-ac10-0800200c9a66"
+    BatteryLow20 = "e659f305-ea98-11e3-ac10-0800200c9a66"
+    BatterySerial = "e659f306-ea98-11e3-ac10-0800200c9a66"  # 22136
+    TiltAnglePitch = "e659f307-ea98-11e3-ac10-0800200c9a66"
+    TiltAngleRoll = "e659f308-ea98-11e3-ac10-0800200c9a66"
+    TiltAngleYaw = "e659f309-ea98-11e3-ac10-0800200c9a66"
+    Temperature = "e659f310-ea98-11e3-ac10-0800200c9a66"
+    StatusError = "e659f30f-ea98-11e3-ac10-0800200c9a66"
+    BatteryCells = "e659f31b-ea98-11e3-ac10-0800200c9a66"
+    BatteryTemp = "e659f315-ea98-11e3-ac10-0800200c9a66"
+    BatteryVoltage = "e659f316-ea98-11e3-ac10-0800200c9a66"
+    CurrentAmps = "e659f312-ea98-11e3-ac10-0800200c9a66"
+    CustomName = "e659f3fd-ea98-11e3-ac10-0800200c9a66"
+    FirmwareRevision = "e659f311-ea98-11e3-ac10-0800200c9a66"  # 3034
+    HardwareRevision = "e659f318-ea98-11e3-ac10-0800200c9a66"  # 2206
+    LastErrorCode = "e659f31c-ea98-11e3-ac10-0800200c9a66"
+    LifetimeAmpHours = "e659f31a-ea98-11e3-ac10-0800200c9a66"
+    LifetimeOdometer = "e659f319-ea98-11e3-ac10-0800200c9a66"
+    LightingMode = "e659f30c-ea98-11e3-ac10-0800200c9a66"
+    LightsBack = "e659f30e-ea98-11e3-ac10-0800200c9a66"
+    LightsFront = "e659f30d-ea98-11e3-ac10-0800200c9a66"
+    Odometer = "e659f30a-ea98-11e3-ac10-0800200c9a66"
+    SafetyHeadroom = "e659f317-ea98-11e3-ac10-0800200c9a66"
+    SpeedRpm = "e659f30b-ea98-11e3-ac10-0800200c9a66"
+    TripRegenAmpHours = "e659f314-ea98-11e3-ac10-0800200c9a66"
+    TripTotalAmpHours = "e659f313-ea98-11e3-ac10-0800200c9a66"
+    UartSerialRead = "e659f3fe-ea98-11e3-ac10-0800200c9a66"
+    UartSerialWrite = "e659f3ff-ea98-11e3-ac10-0800200c9a66"
+
 
 '''
 0x0000 = e659F301-ea98-11e3-ac10-0800200c9a66 (OnewheelServiceUUID)

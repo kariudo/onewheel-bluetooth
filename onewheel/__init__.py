@@ -1,0 +1,1 @@
+from .characteristics import UUIDs

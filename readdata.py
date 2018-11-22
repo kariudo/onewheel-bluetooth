@@ -6,7 +6,7 @@ from time import sleep
 
 from pygatt import BLEAddressType, GATTToolBackend, exceptions
 
-from onewheel import characteristics as chars
+from onewheel import UUIDs
 
 
 def load_cli_configuration():
@@ -35,9 +35,9 @@ def main():
     try:
         unlock_gatt_sequence(device)
         print("Reading Onewheel status:")
-        battery_remaining_value = device.char_read(chars.uuid_dict["BatteryRemaining"])
-        lifetime_odometer_value = device.char_read(chars.uuid_dict["LifetimeOdometer"])
-        trip_odometer_value = device.char_read(chars.uuid_dict["Odometer"])
+        battery_remaining_value = device.char_read(UUIDs.BatteryRemaining)
+        lifetime_odometer_value = device.char_read(UUIDs.LifetimeOdometer)
+        trip_odometer_value = device.char_read(UUIDs.Odometer)
         print("Battery Remaining: %s%%" % int(hexlify(battery_remaining_value), 16))
         print("Lifetime Odometer: %s Miles" % int(hexlify(lifetime_odometer_value), 16))
         print("Trip Odometer: %s Miles" % int(hexlify(trip_odometer_value), 16))
@@ -49,31 +49,21 @@ def main():
 
 
 def handle_key_response(_, data):
+    """ Append all key responses to the global key """
     global key_input
     key_input += data
 
 
-def print_all_chars(device):
-    """ Print a list of all the characteristics against the known list """
-    all_chars = device.discover_characteristics()
-    for scanned_uuid in all_chars:
-        name = 'unknown'
-        for key, uuid in chars.uuid_dict.items():
-            if uuid == scanned_uuid:
-                name = key
-        print("Reading %s" % name)
-
-
 def unlock_gatt_sequence(device):
     print("Requesting encryption key...")
-    device.subscribe(chars.uuid_dict["UartSerialRead"], callback=handle_key_response)
-    version = device.char_read(chars.uuid_dict["FirmwareVersion"])
-    device.char_write(chars.uuid_dict["FirmwareVersion"], version, True)
+    device.subscribe(UUIDs.UartSerialRead, callback=handle_key_response)
+    version = device.char_read(UUIDs.FirmwareVersion)
+    device.char_write(UUIDs.FirmwareVersion, version, True)
     wait_for_key_response()
     key_output = create_response_key_output()
     print("Sending unlock key...")
-    device.char_write(chars.uuid_dict["UartSerialWrite"], key_output)
-    device.unsubscribe(chars.uuid_dict["UartSerialRead"])
+    device.char_write(UUIDs.UartSerialWrite, key_output)
+    device.unsubscribe(UUIDs.UartSerialRead)
     sleep(0.5)  # wait a moment for unlock
 
 
