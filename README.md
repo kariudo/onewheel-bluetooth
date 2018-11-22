@@ -21,3 +21,6 @@ Battery Remaining: 100%
 Lifetime Odometer: 57 Miles
 Trip Odometer: 0 Miles
 ```
+
+### Credits
+Thanks to [@beeradmoore](https://github.com/beeradmoore) for figuring out the md5 chunks for the serial stream reasponse via the ponewheel issue: https://github.com/ponewheel/android-ponewheel/issues/86#issuecomment-440809066
