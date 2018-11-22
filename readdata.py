@@ -29,28 +29,23 @@ key_input = bytearray()
 
 
 def main():
-    global device
     ow_mac = load_cli_configuration()
-
+    adapter.start()
+    device = adapter.connect(ow_mac, address_type=ADDRESS_TYPE)
     try:
-        adapter.start()
-        device = adapter.connect(ow_mac, address_type=ADDRESS_TYPE)
-        try:
-            unlock_gatt_sequence(device)
-            print("Reading Onewheel status:")
-            battery_remaining_value = device.char_read(chars.uuid_dict["BatteryRemaining"])
-            lifetime_odometer_value = device.char_read(chars.uuid_dict["LifetimeOdometer"])
-            trip_odometer_value = device.char_read(chars.uuid_dict["Odometer"])
-            print("Battery Remaining: %s%%" % int(hexlify(battery_remaining_value), 16))
-            print("Lifetime Odometer: %s Miles" % int(hexlify(lifetime_odometer_value), 16))
-            print("Trip Odometer: %s Miles" % int(hexlify(trip_odometer_value), 16))
-        except exceptions.NotificationTimeout:
-            print("Timed out.")
+        unlock_gatt_sequence(device)
+        print("Reading Onewheel status:")
+        battery_remaining_value = device.char_read(chars.uuid_dict["BatteryRemaining"])
+        lifetime_odometer_value = device.char_read(chars.uuid_dict["LifetimeOdometer"])
+        trip_odometer_value = device.char_read(chars.uuid_dict["Odometer"])
+        print("Battery Remaining: %s%%" % int(hexlify(battery_remaining_value), 16))
+        print("Lifetime Odometer: %s Miles" % int(hexlify(lifetime_odometer_value), 16))
+        print("Trip Odometer: %s Miles" % int(hexlify(trip_odometer_value), 16))
+    except exceptions.NotificationTimeout:
+        print("Timed out.")
     finally:
-        try:
-            device.disconnect()
-        finally:
-            adapter.stop()
+        device.disconnect()
+        adapter.stop()
 
 
 def handle_key_response(_, data):
