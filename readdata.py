@@ -55,6 +55,7 @@ def handle_key_response(_, data):
 
 
 def unlock_gatt_sequence(device):
+    """ Unlock lasts about 25 seconds, if we are doing more than one read, we will need to call this more """
     print("Requesting encryption key...")
     device.subscribe(UUIDs.UartSerialRead, callback=handle_key_response)
     version = device.char_read(UUIDs.FirmwareRevision)
