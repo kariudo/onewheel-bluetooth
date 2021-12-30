@@ -1,10 +1,9 @@
 import logging
 import asyncio
 from argparse import ArgumentParser
-from binascii import hexlify
-from bleak import BleakScanner, BleakClient
-from bleak.exc import BleakError
-from onewheel import UUIDs, unlock
+from bleak import BleakScanner
+from onewheel import Onewheel
+from time import sleep
 
 
 async def load_cli_configuration():
@@ -18,7 +17,11 @@ async def load_cli_configuration():
                         help="attempt to detect the identifier of a visible onewheel")
     args = parser.parse_args()
 
-    logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO)
+    logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
+                        level=logging.DEBUG if args.verbose else logging.INFO,
+                        datefmt='%Y-%m-%d %H:%M:%S')
+
+    ow_mac = ""
 
     if args.scan:
         devices = await BleakScanner.discover()
@@ -34,38 +37,49 @@ async def load_cli_configuration():
     if not ow_mac:
         logging.error(
             "You must provide a device MAC address, or use --scan mode. See --help for options.")
-        exit()
+        quit(3)
     return ow_mac
 
 
 async def main():
-    ow_mac = await load_cli_configuration()
-    device = await BleakScanner.find_device_by_address(ow_mac, timeout=20.0)
-    try:
-        if not device:
-            raise BleakError(
-                f"A device with address {ow_mac} could not be found.")
-        async with BleakClient(device) as client:
-            logging.debug("Connected...")
-            try:
-                await unlock(client)
-                logging.debug("Reading Onewheel status:")
-                battery_remaining_value = await client.read_gatt_char(UUIDs.BatteryRemaining)
-                lifetime_odometer_value = await client.read_gatt_char(UUIDs.LifetimeOdometer)
-                trip_odometer_value = await client.read_gatt_char(UUIDs.Odometer)
-                logging.info("Battery Remaining: %s%%" %
-                             int(hexlify(battery_remaining_value), 16))
-                logging.info("Lifetime Odometer: %s Miles" %
-                             int(hexlify(lifetime_odometer_value), 16))
-                logging.info("Trip Odometer: %s Miles" %
-                             int(hexlify(trip_odometer_value), 16))
-            except Exception as e:
-                logging.error(e)
-            finally:
-                await client.disconnect()
-    except BleakError as e:
-        logging.error(e)
-
+    address = await load_cli_configuration()
+    onewheel = Onewheel(address)
+    if await onewheel.connect():
+        try:
+            logging.info(f"Connected to board: {onewheel.name}")
+            retry = 5
+            while True:
+                if not onewheel.client.is_connected:
+                    logging.warning("Not connected, exiting loop")
+                    break
+                batt = await onewheel.batt_percentage()
+                # exit if we aren't getting valid data.
+                if batt == 0:
+                    if retry > 0:
+                        retry -= 1
+                        logging.warning(
+                            "Unable to read valid data, retrying in 3 sec...")
+                        sleep(3)
+                        continue
+                    else:
+                        raise Exception(
+                            "Unable able to read valid data, after 5 failed attempts. Exiting.")
+                logging.info("Battery : [%-20s] %d%%" %
+                             ('='*int(batt/5), batt))
+                logging.info(f"Trip    : {await onewheel.tripmeter()} mi")
+                logging.info(f"Odometer: {await onewheel.odometer()} mi")
+                retry = 5  # reset retry count
+                sleep(1)  # wait before refreshing
+        except KeyboardInterrupt:
+            logging.warning(
+                "Keyboard interrupt received. Disconnecting and exiting.")
+        except Exception as e:
+            logging.error(e)
+        finally:
+            await onewheel.disconnect()
+            quit(0)
+    else:
+        logging.warning("Cannot read data, not connected")
 
 if __name__ == "__main__":
     asyncio.run(main())

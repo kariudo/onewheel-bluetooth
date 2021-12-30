@@ -4,27 +4,25 @@ from time import sleep
 from hashlib import md5
 from time import sleep
 
-key_input = bytearray()
-
-
-def handle_key_response(_, data):
-    """ Append all key responses to the global key """
-    global key_input
-    key_input += data
-
 
 async def unlock(client):
     """ Unlock access to GATT characteristics; lasts about 25 seconds, if we are doing more than one read, we will need to call this more """
     logging.debug("Requesting encryption key...")
-    empty_key()
+
+    key_input = bytearray()
+
+    def handle_key_response(_, data):
+        """ Append all key responses to the global key """
+        nonlocal key_input
+        key_input += data
+
     await client.start_notify(UUIDs.UartSerialRead, handle_key_response)
 
-    version = await client.read_gatt_char(UUIDs.FirmwareRevision)
-    await client.write_gatt_char(UUIDs.FirmwareRevision, version, True)
+    await bounce_version(client)
 
-    wait_for_key_response()
+    wait_for_key_response(key_input)
 
-    key_output = create_response_key_output()
+    key_output = create_response_key_output(key_input)
     logging.debug("Sending unlock key...")
     await client.write_gatt_char(UUIDs.UartSerialWrite, key_output)
     await client.stop_notify(UUIDs.UartSerialRead)
@@ -32,13 +30,13 @@ async def unlock(client):
     logging.debug("Unlock sequence complete...")
 
 
-def empty_key():
-    """ Empty out the unlock key """
-    global key_input
-    key_input = bytearray()
+async def bounce_version(client):
+    """ Read and write back the firmware revision. This is used to trigger the unlock sequence and to keep unlocked """
+    version = await client.read_gatt_char(UUIDs.FirmwareRevision)
+    await client.write_gatt_char(UUIDs.FirmwareRevision, version, True)
 
 
-def create_response_key_output():
+def create_response_key_output(key_input):
     """ Build the response key we will send to the board to unlock access to characteristic values """
     array_to_md5 = key_input[3:19] + bytearray.fromhex(
         "D9 25 5F 0F 23 35 4E 19 BA 73 9C CD C4 A9 17 65")
@@ -49,7 +47,7 @@ def create_response_key_output():
     return key_output
 
 
-def wait_for_key_response():
+def wait_for_key_response(key_input):
     """ Wait for full key from notifications with 30 second timeout """
     timeout = 30.0
     while len(key_input) < 20 and timeout > 0:
@@ -59,7 +57,7 @@ def wait_for_key_response():
     if timeout == 0:
         logging.error(
             "Error: timeout reached waiting for encryption key response.")
-        quit(2)
+        raise Exception("Timeout reached waiting for encryption key response")
 
 
 def calculate_check_byte(key_output):
