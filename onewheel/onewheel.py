@@ -7,13 +7,26 @@ from binascii import hexlify
 
 
 class Onewheel:
+    """Onewheel connection client.
+
+    Provides access to Onewheel devices states and settings via bluetooth.
+
+    Args:
+        address (str): Bluetooth MAC address of the board.
+
+    Attributes:
+        address (str): Bluetooth MAC address of the board.
+        name (str): Name of the board (available after connection).
+        client (BleakClient): Bluetooth connection client object. 
+    """
+
     def __init__(self, address):
         self.address = address
         self.name = None
         self.client = BleakClient(self.address)
 
     async def connect(self):
-        """ Connect to the device """
+        """Connect to the device."""
         logging.debug(f"Connecting to {self.address}")
         try:
             await self.client.connect()
@@ -29,7 +42,7 @@ class Onewheel:
             return self.client.is_connected
 
     async def disconnect(self):
-        """ Disconnect from device """
+        """Disconnect from device."""
         logging.debug(f"Disconnecting from {self.address}")
         try:
             await self.client.disconnect()
@@ -38,31 +51,31 @@ class Onewheel:
             logging.error(e)
 
     async def read_uuid_as_int(self, uuid):
-        """ Read the provided UUID and return an int """
+        """Read the provided UUID and return an int."""
         value = await self.client.read_gatt_char(uuid)
         int_value = bin2int(value)
         return int_value
 
     async def batt_percentage(self):
-        """ Read the current battery percentage """
+        """Read the current battery percentage."""
         return await self.read_uuid_as_int(UUIDs.BatteryRemaining)
 
     async def odometer(self):
-        """ Read the odometer """
+        """Read the odometer."""
         return await self.read_uuid_as_int(UUIDs.LifetimeOdometer)
 
     async def tripmeter(self):
-        """ Read the trip odometer """
+        """Read the trip odometer."""
         return await self.read_uuid_as_int(UUIDs.Odometer)
 
     # TODO Add remaining property functions
 
     async def unlock(self):
-        """ send teh"""
+        """Initiate the unlock command flow."""
         await unlock_gatt(self.client)
 
     async def keep_alive(self):
-        """ Send the command to keep us unlocked every 20 seconds """
+        """Send the command to keep us unlocked every 20 seconds."""
         await asyncio.sleep(20)
         if self.client.is_connected:
             await bounce_version(self.client)
@@ -72,7 +85,7 @@ class Onewheel:
             logging.warning("Not connected, cannot keep alive")
 
     async def is_locked(self):
-        """ Attempt to read some data to see if we need to unlock GATT """
+        """Attempt to read some data to see if we need to unlock GATT."""
         batt = await self.batt_percentage()
         # If the battery reads as 0 we are not getting data.
         locked = batt == 0

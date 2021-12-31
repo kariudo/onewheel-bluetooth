@@ -1,3 +1,4 @@
+from .onewheel import Onewheel
 from .characteristics import UUIDs
 from .auth import unlock
-from .onewheel import Onewheel
+from .scan import scan_for_onewheel

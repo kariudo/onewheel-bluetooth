@@ -1,13 +1,17 @@
 import logging
 import asyncio
 from argparse import ArgumentParser
-from bleak import BleakScanner
-from onewheel import Onewheel
+from onewheel import Onewheel, scan_for_onewheel
 from time import sleep
+
+loop_delay = 1  # seconds between refreshed data
+max_failures = 5  # number of times in a row to retry when bad data is received
 
 
 async def load_cli_configuration():
-    """ configure CLI arguments and return the device address """
+    """configure CLI arguments and return the device address."""
+
+    # Parse out the commandline arguments.
     parser = ArgumentParser()
     parser.add_argument("device", type=str, nargs='?',
                         help="bluetooth address of the Onewheel to connect to")
@@ -21,20 +25,20 @@ async def load_cli_configuration():
                         level=logging.DEBUG if args.verbose else logging.INFO,
                         datefmt='%Y-%m-%d %H:%M:%S')
 
-    ow_mac = ""
+    ow_mac: str
 
     if args.scan:
-        devices = await BleakScanner.discover()
-        for d in devices:
-            logging.debug(f"Found a bluetooth device: {d}")
-            if d.name.startswith("ow"):
-                # assuming this is a onewheel
-                logging.info(f"Likely found a onewheel, using {d.address}")
-                ow_mac = d.address
-                break
+        # If scan, then find the first onewheel in range.
+        try:
+            ow_mac = await scan_for_onewheel()
+        except Exception as e:
+            logging.error(e)
+            quit(4)
     else:
+        # Otherwise, use the onewheel MAC address the user provides.
         ow_mac = args.device
     if not ow_mac:
+        # If nothing was provided, complain to the user.
         logging.error(
             "You must provide a device MAC address, or use --scan mode. See --help for options.")
         quit(3)
@@ -47,7 +51,7 @@ async def main():
     if await onewheel.connect():
         try:
             logging.info(f"Connected to board: {onewheel.name}")
-            retry = 5
+            retry = max_failures
             while True:
                 if not onewheel.client.is_connected:
                     logging.warning("Not connected, exiting loop")
@@ -64,12 +68,14 @@ async def main():
                     else:
                         raise Exception(
                             "Unable able to read valid data, after 5 failed attempts. Exiting.")
+
                 logging.info("Battery : [%-20s] %d%%" %
                              ('='*int(batt/5), batt))
                 logging.info(f"Trip    : {await onewheel.tripmeter()} mi")
                 logging.info(f"Odometer: {await onewheel.odometer()} mi")
-                retry = 5  # reset retry count
-                sleep(1)  # wait before refreshing
+
+                retry = max_failures  # reset retry count on success
+                sleep(loop_delay)  # wait before refreshing
         except KeyboardInterrupt:
             logging.warning(
                 "Keyboard interrupt received. Disconnecting and exiting.")
