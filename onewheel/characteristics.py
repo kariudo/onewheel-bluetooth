@@ -32,17 +32,23 @@ class UUIDs:
     TripTotalAmpHours = "e659f313-ea98-11e3-ac10-0800200c9a66"
     UartSerialRead = "e659f3fe-ea98-11e3-ac10-0800200c9a66"
     UartSerialWrite = "e659f3ff-ea98-11e3-ac10-0800200c9a66"
+    CustomShape = "e659f31e-ea98-11e3-ac10-0800200c9a66"
+    DeviceName = "00002a00-0000-1000-8000-00805f9b34fb"
+    # Unknown1 = "e659f31d-ea98-11e3-ac10-0800200c9a66"
+    # Unknown1 = "e659f31e-ea98-11e3-ac10-0800200c9a66"
+    # Unknown3 = "e659f31f-ea98-11e3-ac10-0800200c9a66"
+    # Unknown4 = "e659f320-ea98-11e3-ac10-0800200c9a66"
 
 
 '''
-0x0000 = e659F301-ea98-11e3-ac10-0800200c9a66 (OnewheelServiceUUID)
+0x0000 = e659F300-ea98-11e3-ac10-0800200c9a66 (OnewheelServiceUUID)
 0x001a = e659F301-ea98-11e3-ac10-0800200c9a66 (OnewheelCharacteristicSerialNumber)
 0x001d = e659f302-ea98-11e3-ac10-0800200c9a66 (OnewheelCharacteristicRidingMode)
 0x0021 = e659f303-ea98-11e3-ac10-0800200c9a66 (OnewheelCharacteristicBatteryRemaining)
-0x0025 = e659f304-ea98-11e3-ac10-0800200c9a66
-0x0029 = e659f305-ea98-11e3-ac10-0800200c9a66
+0x0025 = e659f304-ea98-11e3-ac10-0800200c9a66 (OnewheelCharacteristicBattLow5)
+0x0029 = e659f305-ea98-11e3-ac10-0800200c9a66 (OnewheelCharacteristicBattLow20)
 0x003d = e659f306-ea98-11e3-ac10-0800200c9a66 (OnewheelCharacteristicBatterySerial)
-0x0041 = 659f307-ea98-11e3-ac10-0800200c9a66
+0x0041 = 6599f307-ea98-11e3-ac10-0800200c9a66 (OnewheelCharacteristicTiltAnglePitch)
 0x0045 = e659f308-ea98-11e3-ac10-0800200c9a66 (OnewheelCharacteristicTiltAngleRoll)
 0x0049 = e659f309-ea98-11e3-ac10-0800200c9a66 (OnewheelCharacteristicTiltAngleYaw)
 0x003e = e659f30a-ea98-11e3-ac10-0800200c9a66 (OnewheelCharacteristicOdometer)
